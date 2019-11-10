@@ -15,6 +15,7 @@ var (
 	noCells  int
 	cells    []byte
 	buff     bool
+	intp     bool
 	err      error
 
 	cellIndex = 0
@@ -25,8 +26,9 @@ func main() {
 	log.SetFlags(0)
 
 	flag.StringVar(&filename, "file", "", "Path to .bf file")
-	flag.IntVar(&noCells, "cells", 30000, "Set n0. of cells used")
+	flag.IntVar(&noCells, "cells", 30000, "Set no. of cells to be used")
 	flag.BoolVar(&buff, "v", false, "Verbose, prints the full buffer after execution")
+	flag.BoolVar(&intp, "i", false, "Integer print, prints cell integer value instead of ascii")
 	flag.Parse()
 
 	if filename == "" {
@@ -75,7 +77,11 @@ func main() {
 			*cell--
 			fileIndex++
 		case '.':
-			fmt.Print(string(*cell))
+			if !intp {
+				fmt.Print(string(*cell))
+			} else {
+				fmt.Print(*cell, " ")
+			}
 			fileIndex++
 		case ',':
 			*cell = *input()
