@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 )
 
 var (
@@ -134,11 +135,19 @@ func findOpen() {
 
 func input() *byte {
 	reader := bufio.NewReader(os.Stdin)
-	bt, err := reader.ReadByte()
+	bts, err := reader.ReadBytes('\n') //TODO: handle for windowws \r\n
 	if err != nil {
 		log.Fatal("Can't read byte!")
 	}
-	return &bt
+	if l := len(bts); l > 2 && bts[0] == '\\' {
+		sesc, err := strconv.Unquote("\"" + string(bts[:l-1]) + "\"")
+		if err != nil {
+			log.Fatal("Can't read escape sequence!")
+		}
+		esc := sesc[0]
+		return &esc
+	}
+	return &bts[0]
 }
 
 func lineNo() int {
